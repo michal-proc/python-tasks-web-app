@@ -1,0 +1,127 @@
+{% extends 'panel/layouts/layout.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div class="container overflow-x-auto overflow-y-auto mx-auto px-4">
+        <h1 class="text-xl font-bold my-4">My Tasks</h1>
+
+        <!-- Formularz filtrowania -->
+        <form method="get" class="mb-4">
+            <div class="grid grid-cols-4 gap-4">
+                <div>
+                    <label for="group" class="block text-sm font-bold mb-2">Filter by Group</label>
+                    <select name="group" id="group"
+                            class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <option value="">All Groups</option>
+                        {% for group in user_groups %}
+                            <option value="{{ group.id }}"
+                                    {% if group_filter == group.id|stringformat:"s" %}selected{% endif %}>{{ group.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="task_name" class="block text-sm font-bold mb-2">Filter by Task Name</label>
+                    <input type="text" name="task_name" id="task_name" value="{{ task_name_filter }}"
+                           placeholder="Task name"
+                           class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <div>
+                    <label for="role" class="block text-sm font-bold mb-2">Filter by Role</label>
+                    <select name="role" id="role"
+                            class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <option value="">All Roles</option>
+                        <option value="OWNER" {% if role_filter == 'OWNER' %}selected{% endif %}>Owner</option>
+                        <option value="INSTRUCTOR" {% if role_filter == 'INSTRUCTOR' %}selected{% endif %}>Instructor
+                        </option>
+                        <option value="STUDENT" {% if role_filter == 'STUDENT' %}selected{% endif %}>Student</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="is_active" class="block text-sm font-bold mb-2">Filter by Active</label>
+                    <select name="is_active" id="is_active"
+                            class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <option value="">All</option>
+                        <option value="yes" {% if is_active_filter == 'yes' %}selected{% endif %}>Yes</option>
+                        <option value="no" {% if is_active_filter == 'no' %}selected{% endif %}>No</option>
+                    </select>
+                </div>
+                <div class="flex items-end">
+                    <button type="submit"
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Apply Filters
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="grid grid-cols-1 gap-4">
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white">
+                    <thead>
+                    <tr>
+                        <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-sm leading-4 text-gray-600 tracking-wider">
+                            Title
+                        </th>
+                        <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-sm leading-4 text-gray-600 tracking-wider">
+                            Group Name
+                        </th>
+                        <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-sm leading-4 text-gray-600 tracking-wider">
+                            Description
+                        </th>
+                        <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-sm leading-4 text-gray-600 tracking-wider">
+                            Submitted
+                        </th>
+                        <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-sm leading-4 text-gray-600 tracking-wider">
+                            Max Attempts
+                        </th>
+                        <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-sm leading-4 text-gray-600 tracking-wider">
+                            End Date
+                        </th>
+                        <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-sm leading-4 text-gray-600 tracking-wider">
+                            Active
+                        </th>
+                        <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-sm leading-4 text-gray-600 tracking-wider">
+                            Role
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for task in tasks %}
+                        <tr class="hover:bg-gray-100 cursor-pointer"
+                            onclick="window.location.href='{% url 'submit_solution' task.id %}'">
+                            <td class="py-2 px-4 border-b border-gray-200">{{ task.title }}</td>
+                            <td class="py-2 px-4 border-b border-gray-200">{{ task.group.name }}</td>
+                            <td class="py-2 px-4 border-b border-gray-200">{{ task.description|truncatewords:20 }}</td>
+                            <td class="py-2 px-4 border-b border-gray-200">
+                                {% if task.submitted %}
+                                    <span class="font-bold text-green-500">Yes</span>
+                                {% else %}
+                                    <span class="font-bold text-red-500">No</span>
+                                {% endif %}
+                            </td>
+                            <td class="py-2 px-4 border-b border-gray-200">{{ task.max_attempts }}</td>
+                            <td class="py-2 px-4 border-b border-gray-200">{{ task.end_date }}</td>
+                            <td class="py-2 px-4 border-b border-gray-200">
+                                {% if task.is_active %}
+                                    <span class="font-bold text-green-500">Yes</span>
+                                {% else %}
+                                    <span class="font-bold text-red-500">No</span>
+                                {% endif %}
+                            </td>
+                            <td class="py-2 px-4 border-b border-gray-200">{{ task.role }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="8" class="py-2 px-4 border-b border-gray-200 text-center">You do not have any
+                                tasks.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

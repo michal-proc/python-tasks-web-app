@@ -1,0 +1,243 @@
+{% extends 'panel/layouts/layout.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <div class="flex-1 p-10 text-2xl font-bold">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Card 1: Total Groups -->
+                <div class="bg-white rounded-lg shadow p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-700">Total Groups</p>
+                            <p class="text-2xl font-bold text-blue-500">{{ total_groups }}</p>
+                        </div>
+                        <div class="text-blue-500 text-2xl">📚</div>
+                    </div>
+                </div>
+                <!-- Card 2: Student Groups -->
+                <div class="bg-white rounded-lg shadow p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-700">Student Groups</p>
+                            <p class="text-2xl font-bold text-blue-500">{{ student_groups }}</p>
+                        </div>
+                        <div class="text-blue-500 text-2xl">👨‍🎓</div>
+                    </div>
+                </div>
+                <!-- Card 3: Instructor Groups -->
+                <div class="bg-white rounded-lg shadow p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-700">Instructor Groups</p>
+                            <p class="text-2xl font-bold text-blue-500">{{ instructor_groups }}</p>
+                        </div>
+                        <div class="text-blue-500 text-2xl">👨‍🏫</div>
+                    </div>
+                </div>
+                <!-- Card 4: Owner Groups -->
+                <div class="bg-white rounded-lg shadow p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-700">Owner Groups</p>
+                            <p class="text-2xl font-bold text-blue-500">{{ owner_groups }}</p>
+                        </div>
+                        <div class="text-blue-500 text-2xl">👑</div>
+                    </div>
+                </div>
+                <!-- Card 5: Total Tasks -->
+                <div class="bg-white rounded-lg shadow p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-700">Total Tasks</p>
+                            <p class="text-2xl font-bold text-blue-500">{{ total_tasks }}</p>
+                        </div>
+                        <div class="text-blue-500 text-2xl">📝</div>
+                    </div>
+                </div>
+                <!-- Card 6: Tasks with Solution -->
+                <div class="bg-white rounded-lg shadow p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-700">Tasks with Solution</p>
+                            <p class="text-2xl font-bold text-blue-500">{{ tasks_with_solution }}</p>
+                        </div>
+                        <div class="text-blue-500 text-2xl">📩</div>
+                    </div>
+                </div>
+                <!-- Card 7: Tasks without Solution -->
+                <div class="bg-white rounded-lg shadow p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-700">Tasks without Solution</p>
+                            <p class="text-2xl font-bold text-blue-500">{{ tasks_without_solution }}</p>
+                        </div>
+                        <div class="text-blue-500 text-2xl">📂</div>
+                    </div>
+                </div>
+                <!-- Card 8: Total Solutions -->
+                <div class="bg-white rounded-lg shadow p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-700">Total Solutions</p>
+                            <p class="text-2xl font-bold text-blue-500">{{ total_solutions }}</p>
+                        </div>
+                        <div class="text-blue-500 text-2xl">✅</div>
+                    </div>
+                </div>
+                <!-- Card 9: Total Points -->
+                <div class="bg-white rounded-lg shadow p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-700">Total Points</p>
+                            <p class="text-2xl font-bold text-blue-500">{{ total_points }}</p>
+                        </div>
+                        <div class="text-blue-500 text-2xl">⭐</div>
+                    </div>
+                </div>
+                <!-- Card 10: Max Points -->
+                <div class="bg-white rounded-lg shadow p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-700">Max Points</p>
+                            <p class="text-2xl font-bold text-blue-500">{{ max_points }}</p>
+                        </div>
+                        <div class="text-blue-500 text-2xl">🏆</div>
+                    </div>
+                </div>
+                <!-- Card 11: Plagiarism Detected -->
+                <div class="bg-white rounded-lg shadow p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-700">Plagiarism Detected</p>
+                            <p class="text-2xl font-bold text-blue-500">{{ plagiarism_detected }}</p>
+                        </div>
+                        <div class="text-blue-500 text-2xl">🚨</div>
+                    </div>
+                </div>
+                <!-- Card 12: Plagiarism Suspected -->
+                <div class="bg-white rounded-lg shadow p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-700">Plagiarism Suspected</p>
+                            <p class="text-2xl font-bold text-blue-500">{{ plagiarism_suspected }}</p>
+                        </div>
+                        <div class="text-blue-500 text-2xl">⚠️</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasks Table -->
+            <div class="bg-white mt-6 p-5 rounded-lg shadow">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">My Tasks</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white">
+                        <thead>
+                        <tr>
+                            <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-xs font-medium text-gray-700 leading-4 tracking-wider">
+                                Title
+                            </th>
+                            <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-xs font-medium text-gray-700 leading-4 tracking-wider">
+                                Group Name
+                            </th>
+                            <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-xs font-medium text-gray-700 leading-4 tracking-wider">
+                                Description
+                            </th>
+                            <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-xs font-medium text-gray-700 leading-4 tracking-wider">
+                                Submitted
+                            </th>
+                            <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-xs font-medium text-gray-700 leading-4 tracking-wider">
+                                Max Attempts
+                            </th>
+                            <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-xs font-medium text-gray-700 leading-4 tracking-wider">
+                                End Date
+                            </th>
+                            <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-xs font-medium text-gray-700 leading-4 tracking-wider">
+                                Active
+                            </th>
+                            <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-xs font-medium text-gray-700 leading-4 tracking-wider">
+                                Role
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for task in tasks %}
+                            <tr class="hover:bg-gray-100 cursor-pointer"
+                                onclick="window.location.href='{% url 'submit_solution' task.id %}'">
+                                <td class="py-2 px-4 border-b border-gray-200 text-sm font-normal">{{ task.title }}</td>
+                                <td class="py-2 px-4 border-b border-gray-200 text-sm font-normal">{{ task.group.name }}</td>
+                                <td class="py-2 px-4 border-b border-gray-200 text-sm font-normal">{{ task.description|truncatewords:20 }}</td>
+                                <td class="py-2 px-4 border-b border-gray-200 text-sm font-normal">
+                                    {% if task.submitted %}
+                                        <span class="font-bold text-green-500">Yes</span>
+                                    {% else %}
+                                        <span class="font-bold text-red-500">No</span>
+                                    {% endif %}
+                                </td>
+                                <td class="py-2 px-4 border-b border-gray-200 text-sm font-normal">{{ task.max_attempts }}</td>
+                                <td class="py-2 px-4 border-b border-gray-200 text-sm font-normal">{{ task.end_date }}</td>
+                                <td class="py-2 px-4 border-b border-gray-200 text-sm font-normal">
+                                    {% if task.is_active %}
+                                        <span class="font-bold text-green-500">Yes</span>
+                                    {% else %}
+                                        <span class="font-bold text-red-500">No</span>
+                                    {% endif %}
+                                </td>
+                                <td class="py-2 px-4 border-b border-gray-200 text-sm font-normal">{{ task.role }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="8"
+                                    class="py-2 px-4 border-b border-gray-200 text-center text-sm font-normal">You do
+                                    not have any tasks.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+            <!-- Groups Table -->
+            <div class="bg-white mt-6 p-5 rounded-lg shadow">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">My groups</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white">
+                        <thead>
+                        <tr>
+                            <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-xs font-medium text-gray-700 leading-4 tracking-wider">
+                                Group Name
+                            </th>
+                            <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-xs font-medium text-gray-700 leading-4 tracking-wider">
+                                Description
+                            </th>
+                            <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-xs font-medium text-gray-700 leading-4 tracking-wider">
+                                Role
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for group in groups %}
+                            <tr class="hover:bg-gray-100 cursor-pointer"
+                                onclick="window.location.href='{% url 'view_group' group.group.id %}'">
+                                <td class="py-2 px-4 border-b border-gray-200 text-sm font-normal">{{ group.group.name }}</td>
+                                <td class="py-2 px-4 border-b border-gray-200 text-sm font-normal">{{ group.group.description|truncatewords:20 }}</td>
+                                <td class="py-2 px-4 border-b border-gray-200 text-sm font-normal">{{ group.role }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="5"
+                                    class="py-2 px-4 border-b border-gray-200 text-center text-sm font-normal">You do
+                                    not belong to any groups.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% load static %}
+
+<div class="bg-white shadow-md rounded p-8 mb-8">
+    <div class="flex items-center justify-between">
+        <div class="flex items-center">
+            <div>
+                {% if group.image %}
+                    <img src="{{ group.image.url }}" alt="{{ group.name }}" class="rounded w-64 h-32 object-cover mb-4">
+                    {% if view_type == 'owner' %}
+                        <form action="{% url 'delete_group_image' group.id %}" method="post" class="text-center">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">
+                                Delete Image
+                            </button>
+                        </form>
+                    {% endif %}
+                {% else %}
+                    <img src="{% static 'images/default_group.png' %}" alt="Default Group Image"
+                         class="rounded w-64 h-32 object-cover mb-4">
+                {% endif %}
+            </div>
+            <div class="ml-6">
+                <h2 class="text-4xl font-bold">{{ group.name }}</h2>
+                <p class="text-2xl text-gray-700">{{ group.description }}</p>
+            </div>
+        </div>
+        {% if view_type == 'owner' %}
+            <div class="text-right">
+                <p class="text-lg italic"><strong>Join Code for Student:</strong> {{ group.join_code }}</p>
+                <p class="text-lg italic"><strong>Join Code for
+                    Instructor:</strong> {{ group.join_code_for_instructor }}</p>
+            </div>
+        {% elif view_type == 'instructor' %}
+            <div class="text-right">
+                <p class="text-lg italic"><strong>Join Code for Students:</strong> {{ group.join_code }}</p>
+            </div>
+        {% endif %}
+    </div>
+</div>

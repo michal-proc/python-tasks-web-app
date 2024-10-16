@@ -1,0 +1,51 @@
+{% extends 'panel/layouts/layout.html' %}
+
+{% block title %}Join Group{% endblock %}
+
+{% block content %}
+    <div class="flex-1 p-10">
+        <h1 class="text-2xl font-bold my-4">Join a Group</h1>
+        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <form action="{% url 'join_group_as_student' %}" method="post" class="mb-4">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="id_join_code_student" class="block text-gray-700 text-sm font-bold mb-2">Join Code for
+                        Student</label>
+                    <input type="text" name="join_code_student" id="id_join_code_student"
+                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                           placeholder="Enter join code for student"
+                           value="{{ student_form.join_code_student.value|default_if_none:'' }}">
+                    {% for error in student_form.join_code_student.errors %}
+                        <p class="text-red-500 text-xs italic">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                <div class="flex items-center justify-between">
+                    <button type="submit"
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Join as Student
+                    </button>
+                </div>
+            </form>
+            <form action="{% url 'join_group_as_instructor' %}" method="post">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="id_join_code_instructor" class="block text-gray-700 text-sm font-bold mb-2">Join Code
+                        for Instructor</label>
+                    <input type="text" name="join_code_instructor" id="id_join_code_instructor"
+                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                           placeholder="Enter join code for instructor"
+                           value="{{ instructor_form.join_code_instructor.value|default_if_none:'' }}">
+                    {% for error in instructor_form.join_code_instructor.errors %}
+                        <p class="text-red-500 text-xs italic">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                <div class="flex items-center justify-between">
+                    <button type="submit"
+                            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Join as Instructor
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

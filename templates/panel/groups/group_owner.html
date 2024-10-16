@@ -1,0 +1,308 @@
+{% extends 'panel/layouts/layout.html' %}
+{% load static %}
+
+{% block title %}Group Owner{% endblock %}
+
+{% block content %}
+    <div class="container overflow-x-auto overflow-y-auto mx-auto px-4">
+        <h1 class="text-2xl font-bold my-4">Group {{ group.name }} - Owner View</h1>
+        {% include "panel/groups/components/group_header.html" with group=group view_type="owner" %}
+
+        <!-- Update Group Form -->
+        <div class="bg-white shadow-md rounded p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">Update Group</h2>
+            <form action="{% url 'update_group' group.id %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Group Name</label>
+                    <input type="text" name="name" id="name"
+                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                           value="{{ group.name }}">
+                </div>
+                <div class="mb-4">
+                    <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Description</label>
+                    <textarea name="description" id="description"
+                              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                              rows="3">{{ group.description }}</textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="join_code" class="block text-gray-700 text-sm font-bold mb-2">Join Code</label>
+                    <input type="text" name="join_code" id="join_code"
+                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                           value="{{ group.join_code }}">
+                </div>
+                <div class="mb-4">
+                    <label for="join_code_for_instructor" class="block text-gray-700 text-sm font-bold mb-2">Join Code
+                        for Instructor</label>
+                    <input type="text" name="join_code_for_instructor" id="join_code_for_instructor"
+                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                           value="{{ group.join_code_for_instructor }}">
+                </div>
+                <div class="mb-4">
+                    <label for="image" class="block text-gray-700 text-sm font-bold mb-2">Group Image</label>
+                    <input type="file" name="image" id="image"
+                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <button type="submit"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Update Group
+                </button>
+            </form>
+        </div>
+
+        <!-- Group Messages Section -->
+        <div class="bg-white shadow-md rounded p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">Group Messages</h2>
+            <div>
+                {% for message in group.messages.all %}
+                    <div class="bg-gray-100 rounded p-4 mb-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-bold">{{ message.title }}</h3>
+                            <form action="{% url 'delete_group_message' message.id %}" method="post"
+                                  class="inline-block ml-4">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                        <p>{{ message.content }}</p>
+                        {% if message.image %}
+                            <img src="{{ message.image.url }}" alt="{{ message.title }}" class="mt-4 rounded">
+                        {% endif %}
+                        <p class="text-sm text-gray-600 mt-2">Posted by {{ message.user.username }}
+                            on {{ message.created_at }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+            <form action="{% url 'create_group_message' group.id %}" method="post" enctype="multipart/form-data"
+                  class="mt-4 p-4 bg-gray-50 rounded shadow-sm">
+                {% csrf_token %}
+                <div class="mb-2">
+                    <label for="id_title" class="block text-gray-700 text-sm font-bold mb-1">Title</label>
+                    <input type="text" name="title" id="id_title"
+                           class="shadow appearance-none border rounded w-full py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                           placeholder="Message Title">
+                </div>
+                <div class="mb-2">
+                    <label for="id_content" class="block text-gray-700 text-sm font-bold mb-1">Content</label>
+                    <textarea name="content" id="id_content"
+                              class="shadow appearance-none border rounded w-full py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                              placeholder="Message Content" rows="2"></textarea>
+                </div>
+                <div class="mb-2">
+                    <label for="id_image" class="block text-gray-700 text-sm font-bold mb-1">Image</label>
+                    <input type="file" name="image" id="id_image"
+                           class="shadow appearance-none border rounded w-full py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <button type="submit"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Add Message
+                </button>
+            </form>
+        </div>
+
+
+        <!-- Group Tasks Section -->
+        <div class="bg-white shadow-md rounded p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">Group Tasks</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white">
+                    <thead>
+                    <tr>
+                        <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-xs font-medium text-gray-700 leading-4 tracking-wider">
+                            Title
+                        </th>
+                        <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-xs font-medium text-gray-700 leading-4 tracking-wider">
+                            Description
+                        </th>
+                        <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-xs font-medium text-gray-700 leading-4 tracking-wider">
+                            Max Attempts
+                        </th>
+                        <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-xs font-medium text-gray-700 leading-4 tracking-wider">
+                            End Date
+                        </th>
+                        <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-xs font-medium text-gray-700 leading-4 tracking-wider">
+                            Actions
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for task in group.tasks.all %}
+                        <tr class="hover:bg-gray-100 cursor-pointer"
+                            onclick="window.location.href='{% url 'submit_solution' task.id %}'">
+                            <td class="py-2 px-4 border-b border-gray-200 text-sm font-normal">{{ task.title }}</td>
+                            <td class="py-2 px-4 border-b border-gray-200 text-sm font-normal">{{ task.description|truncatewords:20 }}</td>
+                            <td class="py-2 px-4 border-b border-gray-200 text-sm font-normal">{{ task.max_attempts }}</td>
+                            <td class="py-2 px-4 border-b border-gray-200 text-sm font-normal">{{ task.end_date }}</td>
+                            <td class="py-2 px-4 border-b border-gray-200 text-sm font-normal">
+                                <form action="{% url 'delete_task' task.id %}" method="post" class="inline-block">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="py-2 px-4 border-b border-gray-200 text-center text-sm font-normal">
+                                No tasks available.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <form method="post" action="{% url 'create_task' group.id %}" class="my-4 mx-3">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="title" class="block text-gray-700 text-sm font-bold mb-2">Title</label>
+                        <input type="text" name="title" id="title"
+                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                               value="{{ task_form.title.value|default_if_none:'' }}">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="function_name" class="block text-gray-700 text-sm font-bold mb-2">Function
+                            Name</label>
+                        <input type="text" name="function_name" id="function_name"
+                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                               value="{{ task_form.function_name.value|default_if_none:'' }}">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="function_starter" class="block text-gray-700 text-sm font-bold mb-2">Function
+                            Starter</label>
+                        <div id="functionStarterEditor"
+                             style="height: 150px; width: 100%;">{{ task_form.function_starter.value|default_if_none:'' }}</div>
+                        <textarea name="function_starter" id="functionStarterTextarea"
+                                  style="display: none;">{{ task_form.function_starter.value|default_if_none:'' }}</textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Description</label>
+                        <textarea name="description" id="description"
+                                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                                  rows="3">{{ task_form.description.value|default_if_none:'' }}</textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="max_attempts" class="block text-gray-700 text-sm font-bold mb-2">Max
+                            Attempts</label>
+                        <input type="number" name="max_attempts" id="max_attempts"
+                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                               value="{{ task_form.max_attempts.value|default_if_none:'' }}">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="end_date" class="block text-gray-700 text-sm font-bold mb-2">End Date</label>
+                        <input type="datetime-local" name="end_date" id="end_date"
+                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                               value="{{ task_form.end_date.value|default_if_none:'' }}">
+                    </div>
+
+                    <button type="submit" name="update_task"
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Create new task
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Group Members Section -->
+        <div class="bg-white shadow-md rounded p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">Group Members</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white">
+                    <thead>
+                    <tr>
+                        <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-xs font-medium text-gray-700 leading-4 tracking-wider">
+                            Full Name
+                        </th>
+                        <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-xs font-medium text-gray-700 leading-4 tracking-wider">
+                            Username
+                        </th>
+                        <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-xs font-medium text-gray-700 leading-4 tracking-wider">
+                            Email
+                        </th>
+                        <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-xs font-medium text-gray-700 leading-4 tracking-wider">
+                            Role
+                        </th>
+                        <th class="py-2 px-4 border-b-2 border-gray-200 text-left text-xs font-medium text-gray-700 leading-4 tracking-wider">
+                            Actions
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for member in group.memberships.all %}
+                        <tr class="hover:bg-gray-100">
+                            <td class="py-2 px-4 border-b border-gray-200 text-sm font-normal">{{ member.user.first_name }} {{ member.user.last_name }}</td>
+                            <td class="py-2 px-4 border-b border-gray-200 text-sm font-normal">{{ member.user.username }}</td>
+                            <td class="py-2 px-4 border-b border-gray-200 text-sm font-normal">{{ member.user.email }}</td>
+                            <td class="py-2 px-4 border-b border-gray-200 text-sm font-normal">{{ member.role }}</td>
+                            <td class="py-2 px-4 border-b border-gray-200 text-sm font-normal">
+                                <form action="{% url 'delete_group_member' group.id member.user.id %}" method="post"
+                                      class="inline-block">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">
+                                        Delete Member
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" class="py-2 px-4 border-b border-gray-200 text-center text-sm font-normal">
+                                No members available.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Group Actions Section -->
+        <div class="bg-white shadow-md rounded p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">Actions</h2>
+            <a href="{% url 'delete_group' group.id %}"
+               class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Delete
+                Group</a>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // Initialize ACE editor for task form
+                const functionStarterEditor = ace.edit("functionStarterEditor");
+                functionStarterEditor.setTheme("ace/theme/monokai");
+                functionStarterEditor.session.setMode("ace/mode/python");
+                functionStarterEditor.setValue(document.getElementById('functionStarterTextarea').value, -1);
+                functionStarterEditor.session.on('change', function () {
+                    document.getElementById('functionStarterTextarea').value = functionStarterEditor.getValue();
+                });
+
+                // Initialize ACE editor for test case input data
+                const inputDataEditor = ace.edit("inputDataEditor");
+                inputDataEditor.setTheme("ace/theme/monokai");
+                inputDataEditor.session.setMode("ace/mode/python");
+                inputDataEditor.setValue(document.getElementById('inputDataTextarea').value, -1);
+                inputDataEditor.session.on('change', function () {
+                    document.getElementById('inputDataTextarea').value = inputDataEditor.getValue();
+                });
+
+                // Initialize ACE editor for test case expected output
+                const expectedOutputEditor = ace.edit("expectedOutputEditor");
+                expectedOutputEditor.setTheme("ace/theme/monokai");
+                expectedOutputEditor.session.setMode("ace/mode/python");
+                expectedOutputEditor.setValue(document.getElementById('expectedOutputTextarea').value, -1);
+                expectedOutputEditor.session.on('change', function () {
+                    document.getElementById('expectedOutputTextarea').value = expectedOutputEditor.getValue();
+                });
+            });
+        </script>
+    </div>
+{% endblock %}

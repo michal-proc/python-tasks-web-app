@@ -1,0 +1,74 @@
+{% extends 'panel/layouts/layout.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div class="container overflow-x-auto overflow-y-auto mx-auto px-4">
+        <h1 class="text-xl font-bold my-4">My Groups</h1>
+
+        <!-- Formularz filtrowania -->
+        <form method="get" class="mb-4">
+            <div class="grid grid-cols-4 gap-4">
+                <div>
+                    <label for="role" class="block text-sm font-bold mb-2">Filter by Role</label>
+                    <select name="role" id="role"
+                            class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <option value="">All</option>
+                        <option value="owner" {% if request.GET.role == 'owner' %}selected{% endif %}>Owner</option>
+                        <option value="instructor" {% if request.GET.role == 'instructor' %}selected{% endif %}>
+                            Instructor
+                        </option>
+                        <option value="student" {% if request.GET.role == 'student' %}selected{% endif %}>Student
+                        </option>
+                    </select>
+                </div>
+                <div>
+                    <label for="user" class="block text-sm font-bold mb-2">Filter by User Name</label>
+                    <input type="text" name="user" id="user" value="{{ request.GET.user }}" placeholder="User name"
+                           class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <div>
+                    <label for="group_name" class="block text-sm font-bold mb-2">Filter by Group Name</label>
+                    <input type="text" name="group_name" id="group_name" value="{{ request.GET.group_name }}"
+                           placeholder="Group name"
+                           class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <div class="flex items-end">
+                    <button type="submit"
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Apply Filters
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="grid grid-cols-4 gap-4">
+            {% for item in groups_with_roles %}
+                <div class="cursor-pointer">
+                    <a href="{% url 'view_group' item.group.id %}">
+                        <div class="bg-white shadow-lg rounded-lg">
+                            {% if item.group.image %}
+                                <img src="{{ item.group.image.url }}" alt="{{ item.group.name }}"
+                                     class="w-full h-32 sm:h-48 object-cover">
+                            {% else %}
+                                <img src="{% static 'images/default_group.png' %}" alt="Default Image"
+                                     class="w-full h-32 sm:h-48 object-cover">
+                            {% endif %}
+                            <div class="p-4">
+                                <h2 class="text-lg font-bold">{{ item.group.name }}</h2>
+                                <p>{{ item.group.creator.get_full_name|default:"User" }}</p>
+                                <p class="text-sm text-gray-500">{{ item.role }}</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% empty %}
+                <div class="col-span-4 text-center py-8">
+                    <p class="text-gray-500">You do not have any groups.</p>
+                    <a href="{% url 'group_create' %}" class="text-blue-500 hover:underline">Create group</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

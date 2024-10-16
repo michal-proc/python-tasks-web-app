@@ -1,0 +1,126 @@
+{% extends 'panel/layouts/layout.html' %}
+{% load static %}
+
+{% block title %}User Settings{% endblock %}
+
+{% block content %}
+    <div class="container overflow-x-auto overflow-y-auto mx-auto px-4">
+        <h1 class="text-xl font-bold my-4">User Settings</h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="flex flex-col items-center justify-center mb-8 md:mb-0">
+                <img src="{% static 'images/user_icon.png' %}" alt="User Icon" class="rounded-full w-48 h-48 mb-4">
+                <form action="{% url 'account_settings' %}" method="post" enctype="multipart/form-data"
+                      class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-8 w-full">
+                    {% csrf_token %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="mb-4">
+                            <label for="id_first_name" class="block text-gray-700 text-sm font-bold mb-2">First
+                                Name</label>
+                            <input type="text" name="first_name" id="id_first_name"
+                                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                   placeholder="First Name"
+                                   value="{{ form.first_name.value|default_if_none:user.first_name }}">
+                            {% for error in form.first_name.errors %}
+                                <p class="text-red-500 text-xs italic">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_last_name" class="block text-gray-700 text-sm font-bold mb-2">Last
+                                Name</label>
+                            <input type="text" name="last_name" id="id_last_name"
+                                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                   placeholder="Last Name"
+                                   value="{{ form.last_name.value|default_if_none:user.last_name }}">
+                            {% for error in form.last_name.errors %}
+                                <p class="text-red-500 text-xs italic">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_username" class="block text-gray-700 text-sm font-bold mb-2">Username</label>
+                            <input type="text" name="username" id="id_username"
+                                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                   placeholder="Username"
+                                   value="{{ form.username.value|default_if_none:user.username }}">
+                            {% for error in form.username.errors %}
+                                <p class="text-red-500 text-xs italic">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-span-2 flex items-center justify-between">
+                            <button type="submit"
+                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Update Info
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div>
+                <form action="{% url 'update_email' %}" method="post"
+                      class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-8">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="id_email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                        <input type="email" name="email" id="id_email"
+                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                               placeholder="Email"
+                               value="{{ user.email }}">
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <button type="submit"
+                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Update Email
+                        </button>
+                    </div>
+                </form>
+
+                <form action="{% url 'update_password' %}" method="post"
+                      class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-8">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="id_old_password" class="block text-gray-700 text-sm font-bold mb-2">Current
+                            Password</label>
+                        <input type="password" name="old_password" id="id_old_password"
+                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                               placeholder="Current Password">
+                        {% for error in form.old_password.errors %}
+                            <p class="text-red-500 text-xs italic">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="id_new_password1" class="block text-gray-700 text-sm font-bold mb-2">New
+                            Password</label>
+                        <input type="password" name="new_password1" id="id_new_password1"
+                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                               placeholder="New Password">
+                        {% for error in form.new_password1.errors %}
+                            <p class="text-red-500 text-xs italic">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="id_new_password2" class="block text-gray-700 text-sm font-bold mb-2">Confirm New
+                            Password</label>
+                        <input type="password" name="new_password2" id="id_new_password2"
+                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                               placeholder="Confirm New Password">
+                        {% for error in form.new_password2.errors %}
+                            <p class="text-red-500 text-xs italic">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <button type="submit"
+                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Update Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

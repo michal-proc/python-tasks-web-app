@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Tasks - {% block title %}{% endblock %}</title>
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+    <script src="https://cdn.tailwindcss.com/?version=3.1.8"></script>
+</head>
+<body class="h-screen items-center justify-center" style="background: #edf2f7;">
+<div class="bg-gray-100 flex justify-center items-center h-screen">
+    <div class="w-1/2 h-screen hidden lg:block">
+        <img src="{% static 'images/programmer.jpg' %}" alt=""
+             class="object-cover w-full h-full">
+    </div>
+    {% block content %}
+        <!-- Content -->
+    {% endblock %}
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                {% include 'alert/danger.html' with message=message %}
+            {% elif message.tags == 'info' %}
+                {% include 'alert/success.html' with message=message %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</div>
+</body>
+</html>

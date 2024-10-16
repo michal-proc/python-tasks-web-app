@@ -1,0 +1,89 @@
+{% extends 'main/layouts/layout.html' %}
+
+{% block title %}Python Playground{% endblock %}
+
+{% block content %}
+    <div class="lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-1/2">
+        <h1 class="text-2xl font-semibold mb-4">Python Playground</h1>
+        <form action="{% url 'playground' %}" method="post">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="codeEditor">Your Python code:</label><br>
+                <div id="codeEditor" style="height: 200px; width: 100%;">{{ form.code.value|default_if_none:'' }}</div>
+                <textarea name="code" id="codeTextarea"
+                          style="display: none;">{{ form.code.value|default_if_none:'' }}</textarea>
+            </div>
+
+            <div class="mb-4">
+                <label for="argsEditor">Function Arguments (comma-separated):</label><br>
+                <div id="argsEditor" style="height: 30px; width: 100%;">{{ form.args.value|default_if_none:'' }}</div>
+                <textarea name="args" id="argsTextarea"
+                          style="display: none;">{{ form.args.value|default_if_none:'' }}</textarea>
+            </div>
+
+            <div class="mb-4">
+                <label for="expectedEditor">Expected Outputs (comma-separated):</label><br>
+                <div id="expectedEditor"
+                     style="height: 30px; width: 100%;">{{ form.expected.value|default_if_none:'' }}</div>
+                <textarea name="expected" id="expectedTextarea"
+                          style="display: none;">{{ form.expected.value|default_if_none:'' }}</textarea>
+            </div>
+
+            <div class="mb-4">
+                <label for="functionEditor">Function name to test:</label><br>
+                <div id="functionEditor"
+                     style="height: 30px; width: 100%;">{{ form.function.value|default_if_none:'' }}</div>
+                <textarea name="function" id="functionTextarea"
+                          style="display: none;">{{ form.function.value|default_if_none:'' }}</textarea>
+            </div>
+
+            <button type="submit"
+                    class="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full mb-4">
+                Test
+            </button>
+        </form>
+        {% if output %}
+            <div class="result-section p-4 border border-gray-300 rounded shadow-lg mb-4">
+                {% if output.error %}
+                    <div class="error text-red-500 bg-red-100 p-3 rounded">
+                        Error: {{ output.error }}
+                    </div>
+                {% elif output.result == 'Fail' %}
+                    <div class="error text-red-500 bg-red-100 p-3 rounded">
+                        Test {{ output.result }}! Execution time: {{ output.execution_time }} seconds.
+                        {% if output.result == 'Fail' %}
+                            <br>Actual Output: {{ output.actual_output }}
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div class="success text-green-500 bg-green-100 p-3 rounded">
+                        Test {{ output.result }}! Execution time: {{ output.execution_time }} seconds.
+                        {% if output.result == 'Fail' %}
+                            <br>Actual Output: {{ output.actual_output }}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+    <script type="module">
+        document.addEventListener("DOMContentLoaded", function () {
+            initializeEditor('codeEditor', 'codeTextarea', 'python');
+            initializeEditor('argsEditor', 'argsTextarea', 'text');
+            initializeEditor('expectedEditor', 'expectedTextarea', 'text');
+            initializeEditor('functionEditor', 'functionTextarea', 'text');
+        });
+
+        function initializeEditor(editorId, textareaId, mode) {
+            var editor = ace.edit(editorId);
+            editor.setTheme("ace/theme/monokai");
+            editor.session.setMode("ace/mode/" + mode);
+            editor.setValue(document.getElementById(textareaId).value);
+            editor.session.on('change', function () {
+                document.getElementById(textareaId).value = editor.getValue();
+            });
+        }
+    </script>
+{% endblock %}

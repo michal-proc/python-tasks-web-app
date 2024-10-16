@@ -1,0 +1,78 @@
+{% extends 'main/layouts/layout.html' %}
+{% load static %}
+{% block title %}Main Panel{% endblock %}
+
+{% block content %}
+    <div class="lg:p-24 md:p-16 sm:p-12 p-8 w-full lg:w-1/2 mx-auto">
+        <div class="flex justify-center mb-4">
+            <img src="{% static 'images/logo.png' %}" alt="" class="object-cover w-30 h-30">
+        </div>
+        <h1 class="text-4xl font-semibold mb-6">Welcome to Python Tasks!</h1>
+        <p class="text-lg text-gray-600 mb-4">Python Tasks is an interactive learning platform dedicated to mastering
+            algorithms and data structures through hands-on practice. Users can submit their Python solutions to various
+            challenges, which are then tested and evaluated on the server to provide instant feedback.</p>
+        <div class="flex flex-col sm:flex-row gap-4">
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}"
+                   class="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4">Panel</a>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4"
+                            type="submit">Logout
+                    </button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}"
+                   class="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4">Log In</a>
+                <a href="{% url 'register' %}"
+                   class="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4">Register</a>
+            {% endif %}
+            <a href="{% url 'playground' %}"
+               class="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4">Playground</a>
+        </div>
+    </div>
+
+    <style>
+        @media (max-width: 1400px) {
+            .lg\:p-36 {
+                padding: 24px;
+            }
+
+            .md\:p-52 {
+                padding: 16px;
+            }
+
+            .sm\:20 {
+                padding: 12px;
+            }
+
+            .lg\:w-1\/2 {
+                width: 75%;
+            }
+        }
+
+        @media (max-width: 1000px) {
+            .lg\:p-36 {
+                padding: 16px;
+            }
+
+            .md\:p-52 {
+                padding: 12px;
+            }
+
+            .sm\:20 {
+                padding: 8px;
+            }
+
+            .lg\:w-1\/2 {
+                width: 90%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .lg\:w-1\/2 {
+                width: 100%;
+            }
+        }
+    </style>
+{% endblock %}
