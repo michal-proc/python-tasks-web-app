@@ -52,7 +52,7 @@ Make sure you have the following installed:
 ### 1. Clone the repository:
 ```bash
 git clone <repository-url>
-cd python-tasks-web-app-master
+cd python-tasks-web-app
 ```
 
 ### 2. Set up Docker:
